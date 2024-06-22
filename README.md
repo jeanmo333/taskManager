@@ -1,5 +1,5 @@
 
-![Modelo db](assets/db-model.png)
+![Modelo db](assets/modelo-db.png)
 
 
 ## Installation
