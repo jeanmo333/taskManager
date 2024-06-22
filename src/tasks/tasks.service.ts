@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { TaskManager } from './task-manager.class';
 import { Task } from './task.interface';
 
@@ -6,20 +6,50 @@ import { Task } from './task.interface';
 export class TasksService {
   private readonly taskManager: TaskManager = new TaskManager();
 
-  addTask(title: string) {
-    return this.taskManager.addTask(title);
+  addTask(title: string):Task {
+    const existTask =  this.taskManager.getTaskByTitle(title);
+    if (existTask) throw new BadRequestException(`Task with title ${title} already exists`);
+
+    try {
+        return this.taskManager.addTask(title);
+      } catch (error) {
+          console.log(error); 
+      }
   }
 
   deleteTask(id: number) {
-    return this.taskManager.deleteTask(id);
+    const existTask =  this.taskManager.getTaskById(id);
+    if (!existTask) throw new NotFoundException(`Task with ID ${id} not found`);
+      
+    try {
+         this.taskManager.deleteTask(id);
+         return {messege: "task deleted successfully"}
+      } catch (error) {
+          console.log(error); 
+      }
   }
 
   markTaskAsCompleted(id: number) {
-    const taskCompleted = this.taskManager.markTaskAsCompleted(id);
-    if (!taskCompleted) {
-      return new NotFoundException(`Task with ID ${id} not found`);
+    const existTask =  this.taskManager.getTaskById(id);
+    if (!existTask) throw new NotFoundException(`Task with ID ${id} not found`);
+    try {
+      return  this.taskManager.markTaskAsCompleted(id);;
+    } catch (error) {
+        console.log(error); 
     }
-    return taskCompleted;
+  
+  }
+
+
+  updateTask(id: number, title: string) {
+    const existTask =  this.taskManager.getTaskById(id);
+    if (!existTask) throw new NotFoundException(`Task with ID ${id} not found`);
+    try {
+      return  this.taskManager.updateTask(id,title);;
+    } catch (error) {
+        console.log(error); 
+    }
+  
   }
 
   listTasks() {
@@ -30,4 +60,7 @@ export class TasksService {
     return taskList;
     
   }
+
+
+ 
 }

@@ -6,7 +6,7 @@ export class TaskManager {
     { id: 2, title: 'Build a REST API', completed: false },
     { id: 3, title: 'Deploy application', completed: true },
   ];
-  private nextId: number = 4;
+ private  nextId: number = 4;
 
   addTask(title: string): Task {
     const newTask: Task = { id: this.nextId++, title, completed: false };
@@ -23,16 +23,29 @@ export class TaskManager {
     return true;
   }
 
-  markTaskAsCompleted(id: number) {
+  markTaskAsCompleted(id: number): Task {
     const task = this.tasks.find(task => task.id === id);
-    if (!task) {
-      throw new Error(`Task with id ${id} not found`);
-    }
     task.completed = true;
     return task;
   }
 
-  listTasks() {
+  updateTask(id: number, title:string):Task {
+    const task = this.tasks.find(task => task.id === id);
+    task.completed = true;
+    task.title = title;
+    return task;
+  }
+
+  listTasks():Task[] {
     return this.tasks;
+  }
+
+
+  getTaskById(id: number):Task {
+    return this.tasks.find(task => task.id === id);
+  }
+
+  getTaskByTitle(title: string):Task {
+    return this.tasks.find(task => task.title === title);
   }
 }
